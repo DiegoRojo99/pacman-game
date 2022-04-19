@@ -59,13 +59,19 @@ const keys={
 let lastKey = ''
 
 const map=[
-    ['1','-','-','-','-','-','2'],
-    ['|',' ',' ',' ',' ',' ','|'],
-    ['|',' ','b',' ','b',' ','|'],
-    ['|',' ',' ',' ',' ',' ','|'],
-    ['|',' ','b',' ','b',' ','|'],
-    ['|',' ',' ',' ',' ',' ','|'],
-    ['4','-','-','-','-','-','3']
+    ['1','-','-','-','-','-','-','-','-','-','2'],
+    ['|','.','.','.','.','.','.','.','.','.','|'],
+    ['|','.','b','.','[','7',']','.','b','.','|'],
+    ['|','.','.','.','.','_','.','.','.','.','|'],
+    ['|','.','[',']','.','.','.','[',']','.','|'],
+    ['|','.','.','.','.','^','.','.','.','.','|'],
+    ['|','.','b','.','[','+',']','.','b','.','|'],
+    ['|','.','.','.','.','_','.','.','.','.','|'],
+    ['|','.','[',']','.','.','.','[',']','.','|'],
+    ['|','.','.','.','.','^','.','.','.','.','|'],
+    ['|','.','b','.','[','5',']','.','b','.','|'],
+    ['|','.','.','.','.','.','.','.','.','.','|'],
+    ['4','-','-','-','-','-','-','-','-','-','3'],
 ]
 
 function createImage(src){
@@ -165,6 +171,106 @@ map.forEach((row,i) => {
                     image: createImage('./img/block.png')
                 })
             )
+                break
+            case '[':
+                boundaries.push(
+                    new Boundary({
+                        position:{
+                            x: Boundary.width * j,
+                            y: Boundary.height * i
+                        },
+                        image: createImage('./img/capLeft.png')
+                    })
+                )
+                break
+            case ']':
+                boundaries.push(
+                    new Boundary({
+                        position:{
+                            x: Boundary.width * j,
+                            y: Boundary.height * i
+                        },
+                        image: createImage('./img/capRight.png')
+                    })
+                )
+                break
+            case '_':
+                boundaries.push(
+                    new Boundary({
+                        position:{
+                            x: Boundary.width * j,
+                            y: Boundary.height * i
+                        },
+                        image: createImage('./img/capBottom.png')
+                    })
+                )
+                break
+            case '^':
+            boundaries.push(
+                new Boundary({
+                    position:{
+                        x: Boundary.width * j,
+                        y: Boundary.height * i
+                    },
+                    image: createImage('./img/capTop.png')
+                })
+            )
+                break
+
+            case '+':
+            boundaries.push(
+                new Boundary({
+                    position:{
+                        x: Boundary.width * j,
+                        y: Boundary.height * i
+                    },
+                    image: createImage('./img/pipeCross.png')
+                })
+            )
+                break
+            case '7':
+                boundaries.push(
+                    new Boundary({
+                        position:{
+                            x: Boundary.width * j,
+                            y: Boundary.height * i
+                        },
+                        image: createImage('./img/pipeConnectorBottom.png')
+                    })
+                )
+                    break
+            case '5':
+                boundaries.push(
+                    new Boundary({
+                        position:{
+                            x: Boundary.width * j,
+                            y: Boundary.height * i
+                        },
+                        image: createImage('./img/pipeConnectorTop.png')
+                    })
+                )
+                break
+            case '6':
+                boundaries.push(
+                    new Boundary({
+                        position:{
+                            x: Boundary.width * j,
+                            y: Boundary.height * i
+                        },
+                        image: createImage('./img/pipeConnectorLeft.png')
+                    })
+                )
+                break
+            case '8':
+                boundaries.push(
+                    new Boundary({
+                        position:{
+                            x: Boundary.width * j,
+                            y: Boundary.height * i
+                        },
+                        image: createImage('./img/pipeConnectorRight.png')
+                    })
+                )
                 break
         }
     })
