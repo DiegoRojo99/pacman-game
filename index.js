@@ -41,6 +41,20 @@ class Player{
     }
 }
 
+class Pellet{
+    constructor({position, }){
+        this.position=position
+        this.radius=3
+    }
+    draw(){
+        c.beginPath()
+        c.arc(this.position.x,this.position.y,this.radius,0,Math.PI*2)
+        c.fillStyle='white'
+        c.fill()
+        c.closePath()
+    }
+}
+
 const keys={
     w:{
         pressed:false
@@ -80,6 +94,7 @@ function createImage(src){
     return image
 }
 const boundaries = []
+const pellets = []
 
 const player = new Player({
     position:{
@@ -272,6 +287,16 @@ map.forEach((row,i) => {
                     })
                 )
                 break
+            case '.':
+                pellets.push(
+                    new Pellet({
+                        position:{
+                            x: Boundary.width * j + Boundary.width/2,
+                            y: Boundary.height * i + Boundary.height/2
+                        }
+                    })
+                )
+                break
         }
     })
 })
@@ -342,6 +367,19 @@ function animate(){
             }
         }
     }
+    
+    pellets.forEach((pel,i) => {
+        pel.draw()
+
+        if(
+            Math.hypot(
+                pel.position.x - player.position.x,
+                pel.position.y - player.position.y
+            ) < pel.radius + player.radius
+        ){
+            pellets.splice(i,1)
+        }
+    })
 
     boundaries.forEach((boundary) => {
         boundary.draw()
