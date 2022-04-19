@@ -1,6 +1,8 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 
+const scoreEL = document.querySelector('#scoreEl')
+
 canvas.width = innerWidth
 canvas.height = innerHeight
 
@@ -71,6 +73,7 @@ const keys={
 }
 
 let lastKey = ''
+let score = 0
 
 const map=[
     ['1','-','-','-','-','-','-','-','-','-','2'],
@@ -368,7 +371,8 @@ function animate(){
         }
     }
     
-    pellets.forEach((pel,i) => {
+    for (let i = pellets.length - 1; 0<i; i--){
+        const pel=pellets[i]
         pel.draw()
 
         if(
@@ -378,14 +382,15 @@ function animate(){
             ) < pel.radius + player.radius
         ){
             pellets.splice(i,1)
+            score += 10
+            scoreEL.innerHTML = score
         }
-    })
+    }
 
     boundaries.forEach((boundary) => {
         boundary.draw()
 
         if(circleCollidesWithRectangle({circle:player,rectangle:boundary})) {
-            console.log('We Are Colliding')
             player.velocity.y=0
             player.velocity.x=0
         }
