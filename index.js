@@ -49,6 +49,7 @@ class Ghost{
         this.velocity=velocity
         this.radius=15
         this.color="Red"
+        this.prevCollisions=[]
     }
     draw(){
         c.beginPath()
@@ -126,7 +127,7 @@ const ghosts=[
             y: Boundary.height + Boundary.height/2
         },
         velocity:{
-            x: 0,
+            x: 5,
             y: 0
         }
     })
@@ -338,11 +339,12 @@ map.forEach((row,i) => {
 })
 
 function circleCollidesWithRectangle({circle, rectangle}){
+    const padding = Boundary.width/2 - circle.radius - 1
     return (
-        circle.position.y - circle.radius + circle.velocity.y <= rectangle.position.y + rectangle.height &&
-        circle.position.x + circle.radius + circle.velocity.x >= rectangle.position.x &&
-        circle.position.y + circle.radius + circle.velocity.y >= rectangle.position.y &&
-        circle.position.x - circle.radius + circle.velocity.x <= rectangle.position.x + rectangle.width
+        circle.position.y - circle.radius + circle.velocity.y <= rectangle.position.y + rectangle.height + padding &&
+        circle.position.x + circle.radius + circle.velocity.x >= rectangle.position.x - padding &&
+        circle.position.y + circle.radius + circle.velocity.y >= rectangle.position.y - padding &&
+        circle.position.x - circle.radius + circle.velocity.x <= rectangle.position.x + rectangle.width + padding
         )
 }
 
@@ -433,6 +435,118 @@ function animate(){
 
     ghosts.forEach((ghost) => {
         ghost.update()
+
+        const collisions=[]
+        boundaries.forEach((boundary) =>{
+            if(
+                !collisions.includes('right')&&
+                circleCollidesWithRectangle({
+                    circle:{
+                        ...ghost, 
+                        velocity: {
+                            x:5,
+                            y:0
+                        }
+                    },
+                    rectangle:boundary
+                })
+            ){
+                collisions.push('right')
+            }
+            if(
+                !collisions.includes('left')&&
+                circleCollidesWithRectangle({
+                    circle:{
+                        ...ghost, 
+                        velocity: {
+                            x:-5,
+                            y:0
+                        }
+                    },
+                    rectangle:boundary
+                })
+            ){
+                collisions.push('left')
+            }
+            if(
+                !collisions.includes('up')&&
+                circleCollidesWithRectangle({
+                    circle:{
+                        ...ghost, 
+                        velocity: {
+                            x:0,
+                            y:-5
+                        }
+                    },
+                    rectangle:boundary
+                })
+            ){
+                collisions.push('up')
+            }
+            if(
+                !collisions.includes('down')&&
+                circleCollidesWithRectangle({
+                    circle:{
+                        ...ghost, 
+                        velocity: {
+                            x:0,
+                            y:5
+                        }
+                    },
+                    rectangle:boundary
+                })
+            ){
+                collisions.push('down')
+            }
+        })
+        if(collisions.length>ghost.prevCollisions.length){
+            ghost.prevCollisions = collisions
+        }
+        if(JSON.stringify(collisions) !== JSON.stringify(ghost.prevCollisions)){
+            //console.log('gogo')
+
+            if (ghost.velocity.x > 0){
+                ghost.prevCollisions.push('right')
+            }else if (ghost.velocity.x < 0){
+                ghost.prevCollisions.push('left')
+            }else if (ghost.velocity.y < 0){
+                ghost.prevCollisions.push('up')
+            }else if (ghost.velocity.y > 0){
+                ghost.prevCollisions.push('down')
+            }
+
+            console.log(collisions)
+            console.log(ghost.prevCollisions)
+
+            const pathways = ghost.prevCollisions.filter(collision => {
+                return !collisions.includes(collision)
+            })
+            console.log({pathways})
+
+            const direction=pathways[Math.floor(Math.random()*pathways.length)]
+
+            switch(direction){
+                case 'down':
+                    ghost.velocity.y=5
+                    ghost.velocity.x=0
+                    break
+                case 'up':
+                    ghost.velocity.y=-5
+                    ghost.velocity.x=0
+                    break
+                case 'rigth':
+                    ghost.velocity.y=0
+                    ghost.velocity.x=5
+                    break
+                case 'left':
+                    ghost.velocity.y=0
+                    ghost.velocity.x=-5
+                    break
+            }
+
+            ghost.prevCollisions=[]
+        }
+        //console.log(collisions)
     })
 
 }
